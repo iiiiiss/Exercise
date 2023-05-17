@@ -1,0 +1,33 @@
+import requests
+from bs4 import BeautifulSoup
+import urllib
+
+# 目标网站 URL
+url = "https://www.example.com/"
+
+# 发送 HTTP 请求
+response = requests.get(url)
+
+# 解析 HTML 页面
+soup = BeautifulSoup(response.content, "html.parser")
+
+# 获取页面所有图片链接
+image_links = []
+for img in soup.find_all('img'):
+    src = img.get('src')
+    if src:
+        image_links.append(src)
+
+# 下载图片
+for link in image_links:
+    try:
+        # 提取图片文件名
+        filename = link.split("/")[-1]
+        
+        # 下载图片
+        urllib.request.urlretrieve(link, filename)
+        
+        print("图片下载成功:", filename)
+    except Exception as e:
+        print("图片下载失败:", link)
+        print("错误信息:", str(e))
